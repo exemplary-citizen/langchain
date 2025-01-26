@@ -49,7 +49,9 @@ def parse_tool_call(
     else:
         try:
             function_args = json.loads(
-                raw_tool_call["function"]["arguments"], strict=strict
+                json.loads(
+                    raw_tool_call["function"]["arguments"], strict=strict
+                )
             )
         except JSONDecodeError as e:
             msg = (
