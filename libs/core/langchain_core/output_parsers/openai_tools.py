@@ -48,11 +48,13 @@ def parse_tool_call(
             return None
     else:
         try:
-            function_args = json.loads(
-                json.loads(
-                    raw_tool_call["function"]["arguments"], strict=strict
-                )
-            )
+            # First decode
+            intermediate_data = json.loads(raw_tool_call["function"]["arguments"], strict=strict)
+            # Second decode only if intermediate_data is a string
+            if isinstance(intermediate_data, str):
+                function_args = json.loads(intermediate_data, strict=strict)
+            else:
+                function_args = intermediate_data
         except JSONDecodeError as e:
             msg = (
                 f"Function {raw_tool_call['function']['name']} arguments:\n\n"
